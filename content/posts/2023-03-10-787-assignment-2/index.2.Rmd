@@ -16,9 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 The following R chunk loads the data for the closing prices of nine major tech companies over the last ten years, and plots them as time series.
 
 ```{r}
-setwd("C:/Users/16317/Documents/Spring 2023/STAT 787/Assignment 2")
-
-close <- read.csv("ClosingPrices.csv")
+close <- read.csv("C:\Users\16317\Documents\Spring 2023\STAT 787\Assignment 2\ClosingPrices.csv")
 head(close)
 close$Date <-  as.Date(close$Date, "%m/%d/%Y")
 
