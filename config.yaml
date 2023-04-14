@@ -16,5 +16,5 @@ menu:
 params:
   author: Zach Gagnon
   description: This is a website I made about myself and my work in my statistical computing class.
-  profile_picture: "/static/config_files_profile.jpg"
+  avatar: "/static/profile.jpg"
   menu_item_separator: ' - '
