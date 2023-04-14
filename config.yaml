@@ -1,6 +1,7 @@
 baseURL: /
 title: Zach Gagnon
 theme: hugo-theme-m10c
+image: "config_files/profile.jpg"
 paginate: 8
 menu:
   main:
@@ -15,5 +16,4 @@ menu:
 params:
   author: Zach Gagnon
   description: This is a website I made about myself and my work in my statistical computing class.
-  image: "config_files/profile.jpg"
   menu_item_separator: ' - '
