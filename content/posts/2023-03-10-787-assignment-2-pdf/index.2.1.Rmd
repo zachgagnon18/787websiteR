@@ -9,4 +9,4 @@ tags: []
 
 # Assignment PDF
 
-[View PDF]("/content/posts/Stat787---Assignment-2.pdf")
+<a href="static/pdfs/Stat787---Assignment-2.pdf">View PDF</a>
