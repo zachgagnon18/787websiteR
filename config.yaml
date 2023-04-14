@@ -1,5 +1,5 @@
-baseURL: https://example.com
-title: Your title
+baseURL: /
+title: Zach Gagnon![](/./config_files/profile.jpg)
 theme: hugo-theme-m10c
 paginate: 8
 menu:
@@ -8,22 +8,11 @@ menu:
       name: Home
       url: /
       weight: 1
-    - identifier: tags
-      name: Tags
-      url: /tags/
-      weight: 2
     - identifier: about
-      name: About
+      name: About Me
       url: /about/
-      weight: 3
+      weight: 2
 params:
-  author: John Doe
-  description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  author: Zach Gagnon
+  description: This is a website I made about myself and my work in my statistical computing class.
   menu_item_separator: ' - '
-  social:
-    - icon: github
-      name: Github
-      url: https://github.com/gohugoio
-    - icon: twitter
-      name: Twitter
-      url: https://twitter.com/gohugoio
