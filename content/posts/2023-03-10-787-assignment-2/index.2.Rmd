@@ -1,0 +1,178 @@
+---
+title: "787 Assignment 2"
+author: "Zach Gagnon"
+date: 2023-03-10
+slug: []
+categories: []
+tags: []
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exercise 1
+
+The following R chunk loads the data for the closing prices of nine major tech companies over the last ten years, and plots them as time series.
+
+```{r}
+setwd("C:/Users/16317/Documents/Spring 2023/STAT 787/Assignment 2")
+
+close <- read.csv("ClosingPrices.csv")
+head(close)
+close$Date <-  as.Date(close$Date, "%m/%d/%Y")
+
+par(mfrow=c(3,3))
+plot(close$AAPL ~ close$Date, xlab="AAPL", ylab="Closing Price")
+plot(close$AMZN ~ close$Date, xlab="AMZN", ylab="Closing Price")
+plot(close$GOOG ~ close$Date, xlab="GOOG", ylab="Closing Price")
+plot(close$IBM ~ close$Date, xlab="IBM", ylab="Closing Price")
+plot(close$INTC ~ close$Date, xlab="INTC", ylab="Closing Price")
+plot(close$META ~ close$Date, xlab="META", ylab="Closing Price")
+plot(close$MSFT ~ close$Date, xlab="MSFT", ylab="Closing Price")
+plot(close$NVDA ~ close$Date, xlab="NVDA", ylab="Closing Price")
+plot(close$ORCL ~ close$Date, xlab="ORCL", ylab="Closing Price")
+```
+
+The same plotting will be done again, but using ggplot.
+
+```{r}
+library(ggplot2)
+library(dplyr)
+p1 <- ggplot(close, aes(x=Date, y=AAPL)) + geom_line() + xlab("AAPL") + ylab("Closing Price")
+p2 <- ggplot(close, aes(x=Date, y=AMZN)) + geom_line() + xlab("AMZN") + ylab("Closing Price")
+p3 <- ggplot(close, aes(x=Date, y=GOOG)) + geom_line() + xlab("GOOG") + ylab("Closing Price")
+p4 <- ggplot(close, aes(x=Date, y=IBM)) + geom_line() + xlab("IBM") + ylab("Closing Price")
+p5 <- ggplot(close, aes(x=Date, y=INTC)) + geom_line() + xlab("INTC") + ylab("Closing Price")
+p6 <- ggplot(close, aes(x=Date, y=META)) + geom_line() + xlab("META") + ylab("Closing Price")
+p7 <- ggplot(close, aes(x=Date, y=MSFT)) + geom_line() + xlab("MSFT") + ylab("Closing Price")
+p8 <- ggplot(close, aes(x=Date, y=NVDA)) + geom_line() + xlab("NVDA") + ylab("Closing Price")
+p9 <- ggplot(close, aes(x=Date, y=ORCL)) + geom_line() + xlab("ORCL") + ylab("Closing Price")
+library(patchwork)
+p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9
+```
+
+We can see from both plots above that Apple, Amazon, Google, Meta, Microsoft, Nividia, and Oracle all have similar trends. From 2013 until 2022 we see an exponential increase in closing price, but then a decrease in 2023. Note that we see a big jump after 2020 with this companies, probably due to the Covid-19 pandemic. As for IBM, it appears their stock has decreased somewhat steadily over the last decade. Intel's stock increases in what appears to be a linear trend over from 2013 to 2021, and then took a major dip over the last two years.
+
+The following R chunks plot the time series seen above on one plot. The first chunk does so with traditional plotting and the second with ggplot.
+
+```{r}
+par(mfrow=c(1,1))
+plot(close$AAPL ~ close$Date, type="l", col=2, xlab="Date", ylab="Closing Price", 
+     ylim=c(0,400))
+lines(close$AMZN ~ close$Date, type="l", col=3)
+lines(close$GOOG ~ close$Date, type="l", col=4)
+lines(close$IBM ~ close$Date, type="l", col=5)
+lines(close$INTC ~ close$Date, type="l", col=6)
+lines(close$META ~ close$Date, type="l", col=7)
+lines(close$MSFT ~ close$Date, type="l", col=8)
+lines(close$NVDA ~ close$Date, type="l", col=9)
+lines(close$ORCL ~ close$Date, type="l", col=10)
+legend("topleft", c("AAPL", "AMZN", "GOOG", "IBM", "INTC", "META", "MSFT", "NVDA", "ORCL"), 
+       cex=0.70, fill=2:10)
+```
+
+```{r}
+library(reshape2)
+meltdf <- melt(close, id="Date")
+
+ggplot(meltdf, aes(x=Date,  y=value, colour=variable, group=variable)) +
+  geom_line() + ylab("Closing Price")
+```
+
+## Exercise 2
+
+Using the R data set mtcars, ten linear learners were built using bootstrap samples of the data.
+
+```{r}
+data(mtcars)
+mtcars
+L <- 10
+n <- nrow(mtcars)
+models <- list()
+
+for(i in 1:L)
+{
+  boot <- mtcars[sample(n, replace=T),]
+  learner <- lm(mpg ~ ., data=boot)
+  models[[i]] <- learner
+}
+models
+```
+
+Then, a matrix is created to store the coefficients and MSE of each model. From this matrix, the "average" model is calculated along with its MSE.
+
+```{r}
+models.mat <- matrix(NA, nrow=L, ncol=12)
+for(i in 1:L)
+{
+  models.mat[i,] <- c(models[[i]]$coefficients, mean((models[[i]]$residuals)^2))
+}
+
+fhat.avg <- c()
+for(i in 1:12)
+{
+  avg <- mean(models.mat[,i])
+  fhat.avg <- c(fhat.avg, avg)
+}
+
+singular <- lm(mpg ~ ., data=mtcars)
+compare <- matrix(NA, nrow=2, ncol=12)
+compare[1,] <- fhat.avg
+compare[2,] <- c(singular$coefficients, mean((singular$residuals)^2))
+compare
+```
+
+The first row of the matrix compare seen above contains the coefficients and MSE of the average model, while the second row contains that of the singular linear model. Comparing the two, we can see that most of the coefficient are quite similar, but the MSE of the average model shows that it performs better than the singular model.
+
+## Exercise 3
+
+The following data set contains the coordinates of the countries of Europe. From this data,  dendrograms are plotted of four different hierarchical clustering of the manhattan distances between countries. Single, double, average, and Ward D2 clustering were used.
+
+```{r}
+europe <- read.csv("europe.csv")
+head(europe)
+
+coords <- cbind(europe$latitude, europe$longitude)
+countries <- europe$name
+hc.single <- hclust(dist(coords, method="manhattan"), method="single")
+hc.double <- hclust(dist(coords, method="manhattan"), method="complete")
+hc.avg <- hclust(dist(coords, method="manhattan"), method="average")
+hc.WD2 <- hclust(dist(coords, method="manhattan"), method="ward.D2")
+
+par(mfrow=c(2,2))
+plot(hc.single)
+plot(hc.double)
+plot(hc.avg)
+plot(hc.WD2)
+```
+
+The dendrograms were recreated using ggplot.
+
+```{r}
+library(dendextend)
+#install.packages("ggdendro")
+library(ggdendro)
+
+dend.single <- as.dendrogram(hc.single)
+d1 <- ggdendrogram(dend.single)
+dend.double <- as.dendrogram(hc.double)
+d2 <- ggdendrogram(dend.double)
+dend.avg <- as.dendrogram(hc.avg)
+d3 <- ggdendrogram(dend.avg)
+dend.WD2 <- as.dendrogram(hc.WD2)
+d4 <- ggdendrogram(dend.WD2)
+d1 + d2 + d3 + d4
+```
+
+I was able to find the packages igraph and graph, but I was not able to figure out how to create a "graphplot" with clustering of group size 3. I did a lot of searching and used chat gpt, but unfortunately everything I tried and chat gpt coded returned an error. The libraries are commented in the R chunk below.
+
+```{r}
+#install.packages("igraph")
+#library(igraph)
+#if (!require("BiocManager", quietly = TRUE))
+#  install.packages("BiocManager")
+#BiocManager::install("graph")
+#library(graph)
+```
+
