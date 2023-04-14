@@ -9,4 +9,4 @@ tags: []
 
 # Assignment PDF
 
-<a href="static/pdfs/Stat787---Assignment-2.pdf">View PDF</a>
+[View PDF](https://drive.google.com/file/d/1OkftW74omSQEUIzW8fTjFzFPacfBqp_T/view)
